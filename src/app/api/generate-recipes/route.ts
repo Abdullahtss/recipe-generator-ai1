@@ -1,53 +1,61 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { dbConnect } from '@/lib/db';
-import Recipe from '@/models/Recipe';
+
+export async function GET() {
+  return NextResponse.json({ 
+    message: 'API is working',
+    status: 'OK'
+  });
+}
 
 export async function POST(request: NextRequest) {
   try {
-    // Connect to database first
-    await dbConnect();
-    
     const body = await request.json();
     const { ingredients } = body;
     
     if (!ingredients || !Array.isArray(ingredients)) {
       return NextResponse.json(
-        { error: 'Invalid ingredients format' },
+        { error: 'Invalid ingredients' },
         { status: 400 }
       );
     }
 
-    // Save to database (example)
-    const newRecipe = new Recipe({
-      title: `${ingredients[0]} Delight`,
-      description: `Featuring ${ingredients.join(', ')}`,
-      time: "30 mins",
-      servings: "4",
-      difficulty: "Easy",
-      ingredients: [...ingredients, "Salt", "Pepper", "Oil"],
-      instructions: [
-        "Heat oil in a large pan",
-        `Add ${ingredients.join(', ')}`,
-        "Cook for 20 minutes",
-        "Season and serve"
+    const recipes = {
+      recipes: [
+        {
+          name: `${ingredients[0]} Stir Fry`,
+          description: `Delicious stir fry with ${ingredients.join(', ')}`,
+          time: "25 mins",
+          servings: "4",
+          difficulty: "Easy",
+          ingredients: [...ingredients, "Oil", "Salt", "Pepper"],
+          instructions: [
+            "Heat oil in pan",
+            `Add ${ingredients.join(', ')}`,
+            "Cook for 20 minutes",
+            "Season and serve"
+          ]
+        },
+        {
+          name: `${ingredients[0]} Bowl`,
+          description: "Nutritious bowl with your ingredients",
+          time: "20 mins",
+          servings: "2",
+          difficulty: "Easy",
+          ingredients: [...ingredients, "Lemon", "Herbs"],
+          instructions: [
+            "Prepare ingredients",
+            "Mix in bowl",
+            "Add seasonings",
+            "Serve fresh"
+          ]
+        }
       ]
-    });
+    };
 
-    await newRecipe.save();
-
-    return NextResponse.json({
-      success: true,
-      recipe: newRecipe,
-      message: 'Recipe saved to database'
-    });
-
+    return NextResponse.json(recipes);
   } catch (error) {
-    console.error('Database error:', error);
     return NextResponse.json(
-      { 
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : String(error)
-      },
+      { error: 'Server error' },
       { status: 500 }
     );
   }

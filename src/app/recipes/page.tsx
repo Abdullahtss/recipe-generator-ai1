@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import RecipeCard from '@/components/RecipeCard';
-import { saveRecipe } from '@/lib/db';
 import { IRecipe } from '@/models/Recipe';
 
 const FLOATING_ITEMS = Array.from({ length: 20 }, (_, i) => ({
@@ -90,8 +89,24 @@ export default function RecipeResultsPage() {
 
   const handleSaveRecipe = async (recipe: IRecipe) => {
     try {
-      await saveRecipe(recipe);
-      alert('Recipe saved successfully!');
+      const response = await fetch('/api/save-recipe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(recipe),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save recipe');
+      }
+
+      const data = await response.json();
+      if (data.success) {
+        alert('Recipe saved successfully!');
+      } else {
+        throw new Error(data.error || 'Failed to save recipe');
+      }
     } catch (err) {
       console.error('Save error:', err);
       alert('Failed to save recipe');

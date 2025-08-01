@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { IRecipe } from '@/models/Recipe';
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
@@ -41,15 +40,4 @@ export async function dbConnect(): Promise<typeof mongoose> {
   }
 
   return cached.conn;
-}
-
-// Minimal change: Added this export to fix the build error
-export async function saveRecipe(recipe: Omit<IRecipe, 'id' | 'savedAt'>): Promise<IRecipe> {
-  await dbConnect();
-  const Recipe = mongoose.models.Recipe || mongoose.model('Recipe');
-  const newRecipe = new Recipe({
-    ...recipe,
-    savedAt: new Date()
-  });
-  return await newRecipe.save();
 }
