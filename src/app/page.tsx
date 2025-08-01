@@ -1,103 +1,87 @@
+'use client';
+
 import Image from "next/image";
+import { useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [isHovered, setIsHovered] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-gray-900 text-white overflow-hidden relative">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden opacity-20">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-purple-500 opacity-30"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              width: `${Math.random() * 300 + 100}px`,
+              height: `${Math.random() * 300 + 100}px`,
+              filter: 'blur(60px)',
+              transform: `scale(${Math.random() * 2 + 0.5})`,
+              animation: `pulse ${Math.random() * 15 + 10}s infinite alternate`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Main content */}
+      <main className="relative z-10 flex flex-col items-center justify-center min-h-screen p-8 text-center">
+        <div className="max-w-2xl mx-auto">
+          {/* Logo/Title */}
+          <div className="mb-12">
+            <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-300 via-pink-300 to-white">
+              Abdullah's
+            </h1>
+            <h2 className="text-4xl md:text-6xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-pink-200">
+              Recipe Generator
+            </h2>
+            <p className="text-xl md:text-2xl text-purple-100 max-w-lg mx-auto">
+              Create delicious recipes with AI magic
+            </p>
+          </div>
+
+          {/* Login Button */}
+          <button
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className="relative overflow-hidden px-12 py-4 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <span className="relative z-10">Login to Get Started</span>
+            {isHovered && (
+              <span className="absolute inset-0 bg-white opacity-10 animate-pulse"></span>
+            )}
+          </button>
+
+          {/* Featured Recipes Preview */}
+          <div className="mt-16 grid grid-cols-3 gap-4 max-w-md mx-auto">
+            {['Italian', 'Asian', 'Dessert'].map((cuisine) => (
+              <div 
+                key={cuisine}
+                className="bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-colors cursor-pointer border border-white/10"
+              >
+                <div className="text-purple-200 text-sm mb-1">{cuisine}</div>
+                <div className="text-white font-medium">Popular Recipes</div>
+              </div>
+            ))}
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      {/* Footer */}
+      <footer className="relative z-10 pb-8 text-center text-purple-200 text-sm">
+        <p>© {new Date().getFullYear()} Abdullah's Recipe Generator. All rights reserved.</p>
       </footer>
+
+      {/* Animations */}
+      <style jsx global>{`
+        @keyframes pulse {
+          0% { opacity: 0.3; transform: scale(0.8); }
+          100% { opacity: 0.6; transform: scale(1.2); }
+        }
+      `}</style>
     </div>
   );
 }
