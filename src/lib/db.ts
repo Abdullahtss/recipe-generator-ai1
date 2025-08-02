@@ -15,7 +15,11 @@ declare global {
   var mongoose: MongooseCache;
 }
 
-let cached: MongooseCache = global.mongoose || { conn: null, promise: null };
+const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
+
+if (!global.mongoose) {
+  global.mongoose = cached;
+}
 
 export async function dbConnect(): Promise<typeof mongoose> {
   if (cached.conn) {
@@ -40,4 +44,9 @@ export async function dbConnect(): Promise<typeof mongoose> {
   }
 
   return cached.conn;
+}
+
+// Temporary function to prevent import errors
+export async function getSavedRecipes() {
+  return [];
 }

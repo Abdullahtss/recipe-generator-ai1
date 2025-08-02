@@ -1,28 +1,45 @@
 'use client';
 
-import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from 'react';
 
 export default function Home() {
   const [isHovered, setIsHovered] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [backgroundElements, setBackgroundElements] = useState<Array<{
+    top: string;
+    left: string;
+    width: string;
+    height: string;
+    filter: string;
+    transform: string;
+    animation: string;
+  }>>([]);
+
+  useEffect(() => {
+    // Generate background elements on client side only
+    const elements = [...Array(20)].map((_, i) => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      width: `${Math.random() * 300 + 100}px`,
+      height: `${Math.random() * 300 + 100}px`,
+      filter: 'blur(60px)',
+      transform: `scale(${Math.random() * 2 + 0.5})`,
+      animation: `pulse ${Math.random() * 15 + 10}s infinite alternate`,
+    }));
+    
+    setBackgroundElements(elements);
+    setMounted(true);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-gray-900 text-white overflow-hidden relative">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden opacity-20">
-        {[...Array(20)].map((_, i) => (
+        {mounted && backgroundElements.map((element, i) => (
           <div
             key={i}
             className="absolute rounded-full bg-purple-500 opacity-30"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              width: `${Math.random() * 300 + 100}px`,
-              height: `${Math.random() * 300 + 100}px`,
-              filter: 'blur(60px)',
-              transform: `scale(${Math.random() * 2 + 0.5})`,
-              animation: `pulse ${Math.random() * 15 + 10}s infinite alternate`,
-            }}
+            style={element}
           />
         ))}
       </div>

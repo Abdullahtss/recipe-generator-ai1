@@ -2,31 +2,80 @@
 
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF } from '@react-three/drei';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+
+function FoodModel({ modelPath, position, rotationOffset }: { 
+  modelPath: string; 
+  position: [number, number, number]; 
+  rotationOffset: number;
+}) {
+  const { scene } = useGLTF(modelPath);
+  const [rotation, setRotation] = useState(0);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRotation(Date.now() / 2000 + rotationOffset);
+    }, 16); // ~60fps
+    
+    return () => clearInterval(interval);
+  }, [rotationOffset]);
+  
+  return (
+    <primitive 
+      object={scene}
+      position={position}
+      rotation={[0, rotation, 0]}
+      scale={0.5}
+    />
+  );
+}
 
 const FoodItems = () => {
+  const [mounted, setMounted] = useState(false);
+  const [positions, setPositions] = useState<[number, number, number][]>([]);
+  
   const models = [
-    '/models/food1.glb',
-    '/models/food2.glb',
-    '/models/utensils.glb'
-  ].map((model) => {
-    const { scene } = useGLTF(model);
-    return scene;
-  });
+    { path: '/models/food1.glb', offset: 0 },
+    { path: '/models/food2.glb', offset: 1 },
+    { path: '/models/utensils.glb', offset: 2 }
+  ];
+
+  useEffect(() => {
+    setMounted(true);
+    
+    // Calculate positions on client side only
+    const updatePositions = () => {
+      const newPositions = models.map((_, idx) => [
+        Math.sin(Date.now() / 1000 + idx) * 5,
+        Math.cos(Date.now() / 1000 + idx) * 3,
+        -10 + idx * 2
+      ] as [number, number, number]);
+      setPositions(newPositions);
+    };
+    
+    updatePositions();
+    const interval = setInterval(updatePositions, 16); // ~60fps
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <>
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 10]} />
+      </>
+    );
+  }
 
   return (
     <>
       {models.map((model, idx) => (
-        <primitive 
+        <FoodModel
           key={idx}
-          object={model}
-          position={[
-            Math.sin(Date.now() / 1000 + idx) * 5,
-            Math.cos(Date.now() / 1000 + idx) * 3,
-            -10 + idx * 2
-          ]}
-          rotation={[0, Date.now() / 2000 + idx, 0]}
-          scale={0.5}
+          modelPath={model.path}
+          position={positions[idx] || [0, 0, -10 + idx * 2]}
+          rotationOffset={model.offset}
         />
       ))}
       <ambientLight intensity={0.5} />

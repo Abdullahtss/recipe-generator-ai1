@@ -9,7 +9,8 @@ export async function GET(request: Request) {
     try {
       await supabase.auth.exchangeCodeForSession(code)
       return NextResponse.redirect(new URL('/', request.url))
-    } catch (error) {
+    } catch (_error) {
+      // Using underscore to indicate intentionally unused parameter
       return NextResponse.redirect(new URL('/login?error=auth', request.url))
     }
   }

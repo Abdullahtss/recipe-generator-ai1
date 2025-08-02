@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function InputIngredientsPage() {
@@ -83,7 +83,7 @@ export default function InputIngredientsPage() {
               Recipe Generator
             </span>
           </h2>
-          <p className="text-white/80 text-lg">Add your available ingredients and we'll suggest delicious recipes</p>
+          <p className="text-white/80 text-lg">Add your available ingredients and we&apos;ll suggest delicious recipes</p>
         </div>
 
         {/* Your Ingredients Section */}
