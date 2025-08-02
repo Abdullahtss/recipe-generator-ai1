@@ -7,9 +7,9 @@ interface RecipeCardProps {
 export default function RecipeCard({ recipe }: RecipeCardProps) {
   return (
     <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-      <h3 className="text-xl font-bold mb-2">{recipe.name}</h3>
+      <h3 className="text-xl font-bold mb-2">{recipe.title}</h3> {/* Fixed line */}
       <p className="text-gray-600 mb-4">{recipe.description}</p>
-      
+
       <div className="flex gap-4 mb-4">
         <div className="flex items-center gap-1">
           <div className="w-5 h-5 border border-gray-400 rounded"></div>
@@ -24,7 +24,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
           <span>{recipe.difficulty}</span>
         </div>
       </div>
-      
+
       <div className="mb-4">
         <h4 className="font-semibold mb-2">Ingredients:</h4>
         <div className="flex flex-wrap gap-2">
@@ -35,7 +35,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
           ))}
         </div>
       </div>
-      
+
       <div>
         <h4 className="font-semibold mb-2">Instructions:</h4>
         <ol className="list-decimal list-inside space-y-1">
