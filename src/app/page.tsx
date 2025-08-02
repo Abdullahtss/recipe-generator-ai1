@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // ✅ Import the router
 
 export default function Home() {
   const [isHovered, setIsHovered] = useState(false);
@@ -15,8 +16,9 @@ export default function Home() {
     animation: string;
   }>>([]);
 
+  const router = useRouter(); // ✅ Initialize router
+
   useEffect(() => {
-    // Generate background elements on client side only
     const elements = [...Array(20)].map((_, i) => ({
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
@@ -26,7 +28,7 @@ export default function Home() {
       transform: `scale(${Math.random() * 2 + 0.5})`,
       animation: `pulse ${Math.random() * 15 + 10}s infinite alternate`,
     }));
-    
+
     setBackgroundElements(elements);
     setMounted(true);
   }, []);
@@ -62,6 +64,7 @@ export default function Home() {
 
           {/* Login Button */}
           <button
+            onClick={() => router.push('/login')} // ✅ Navigate to /login
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             className="relative overflow-hidden px-12 py-4 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
