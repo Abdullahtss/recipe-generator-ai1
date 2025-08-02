@@ -15,25 +15,20 @@ const FLOATING_ITEMS = Array.from({ length: 20 }, (_, i) => ({
   emoji: ['🍎', '🍕', '🍔', '🥦', '🍓', '🥑'][Math.floor(Math.random() * 6)]
 }));
 
-export default function RecipeResultsPage() {
+export default function RecipeResultsClient() {
   const searchParams = useSearchParams();
   const [recipes, setRecipes] = useState<IRecipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const ingredients = searchParams.get('ingredients')?.split(',') || [];
 
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
         setLoading(true);
         setError('');
-        
-        const ingredients = searchParams.get('ingredients')?.split(',') || [];
-        
+
         if (ingredients.length === 0) {
           setError('Please add some ingredients first');
           setLoading(false);
@@ -52,7 +47,7 @@ export default function RecipeResultsPage() {
 
         const data = await response.json();
         if (data.error) throw new Error(data.error);
-        
+
         setRecipes(data.recipes.map((r: any) => ({
           title: r.name || 'Untitled Recipe',
           description: r.description || '',
@@ -62,7 +57,7 @@ export default function RecipeResultsPage() {
           ingredients: r.ingredients || [],
           instructions: r.instructions || []
         })));
-        
+
       } catch (err) {
         console.error('Error:', err);
         setError(err instanceof Error ? err.message : 'Unknown error');
@@ -97,45 +92,38 @@ export default function RecipeResultsPage() {
         body: JSON.stringify(recipe),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to save recipe');
-      }
-
       const data = await response.json();
-      if (data.success) {
-        alert('Recipe saved successfully!');
-      } else {
+
+      if (!response.ok || !data.success) {
         throw new Error(data.error || 'Failed to save recipe');
       }
+
+      alert('Recipe saved successfully!');
     } catch (err) {
       console.error('Save error:', err);
       alert('Failed to save recipe');
     }
   };
 
-  const ingredients = searchParams.get('ingredients')?.split(',') || [];
-
   return (
     <div className="min-h-screen bg-gray-50 relative overflow-hidden">
-      {isClient && (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {FLOATING_ITEMS.map((item) => (
-            <div
-              key={item.id}
-              className="absolute text-4xl opacity-20"
-              style={{
-                top: `${item.top}%`,
-                left: `${item.left}%`,
-                animation: `float ${item.duration}s linear infinite`,
-                animationDelay: `${item.delay}s`,
-                transform: `scale(${item.scale})`,
-              }}
-            >
-              {item.emoji}
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {FLOATING_ITEMS.map((item) => (
+          <div
+            key={item.id}
+            className="absolute text-4xl opacity-20"
+            style={{
+              top: `${item.top}%`,
+              left: `${item.left}%`,
+              animation: `float ${item.duration}s linear infinite`,
+              animationDelay: `${item.delay}s`,
+              transform: `scale(${item.scale})`,
+            }}
+          >
+            {item.emoji}
+          </div>
+        ))}
+      </div>
 
       <style jsx>{`
         @keyframes float {
@@ -147,14 +135,12 @@ export default function RecipeResultsPage() {
       <header className="bg-white shadow-sm border-b relative z-10">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-xl font-semibold text-gray-800">Recipe Generator</h1>
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => window.history.back()}
-              className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2"
-            >
-              ← Back
-            </button>
-          </div>
+          <button 
+            onClick={() => window.history.back()}
+            className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          >
+            ← Back
+          </button>
         </div>
       </header>
 
